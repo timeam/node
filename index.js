@@ -105,6 +105,7 @@ setInterval(function() {
                       "icon_url": "https://i.imgur.com/nMRazCT.png"
                     },
                     "color": 5746931,
+                    "timestamp", moment(temp_obj.data_time_ms).toISOString(),
                     "fields": [
                       {
                         "name": "Trophies",
@@ -125,9 +126,6 @@ setInterval(function() {
                     ],
                     "image": {
                       "url": goqrme
-                    },
-                    "footer": {
-                      "text": moment(temp_obj.data_time_ms).format('dddd, MMMM Do, YYYY h:mm:ss A') + " (UTC)"
                     }
                   }
                 ]
