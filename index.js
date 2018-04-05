@@ -105,7 +105,7 @@ setInterval(function() {
                       "icon_url": "https://i.imgur.com/nMRazCT.png"
                     },
                     "color": 5746931,
-                    "timestamp": moment(temp_obj.data_time_ms).toISOString(),
+                    "timestamp": (new Date(temp_obj.data_time_ms)).toISOString(),
                     "fields": [
                       {
                         "name": "Trophies",
