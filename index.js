@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+var moment = require('moment');
 const cheerio = require('cheerio');
 
 var app = express();
@@ -67,8 +68,6 @@ setInterval(function() {
     if (temp_data_expanded_url.startsWith(process.env.URL_FILTER) && temp_data_expanded_url.includes('tag')) {
       var d = new Date(temp_obj.data_time_ms);
       var h = d.getHours();
-      var iso = d.toISOString();
-      var time_stamp = iso.trim();
       var re = /.*tag=(.*?)&.*/;
       var hashtag = temp_obj.data_expanded_url.replace(re, "$1");
       if (hashtag && hashtag != 'Y8LRCLVC' && hashtag != 'LY8LJYU9' && h < 12) {
@@ -111,7 +110,7 @@ setInterval(function() {
                       "icon_url": "https://i.imgur.com/nMRazCT.png"
                     },
                     "color": 5746931,
-                    "timestamp": time_stamp,
+                    "timestamp": moment(temp_obj.data_time_ms).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z",
                     "fields": [
                       {
                         "name": "Trophies",
@@ -132,6 +131,9 @@ setInterval(function() {
                     ],
                     "image": {
                       "url": goqrme
+                    },
+                    "footer": {
+                      "text": moment(temp_obj.data_time_ms).format('dddd, MMMM Do, YYYY h:mm:ss A') + " (UTC)"
                     }
                   }
                 ]
