@@ -82,6 +82,7 @@ setInterval(function() {
           var url = process.env.WEBHOOK_FILTERED_URL;
           var player_name = "";
           var trophies = "N/A";
+          var max_wins = "N/A";
           if (err){
             url = process.env.WEBHOOK_UNKNOWN_URL;
             console.log(err);
@@ -94,6 +95,10 @@ setInterval(function() {
             var text_item = $('.horizontal').first().children().first().text();
             if (typeof text_item !== typeof undefined && text_item !== false) {
               trophies = text_item.trim().replace(/\s{2,}/g,' ');
+            }
+            var text_td = $("img[src$='tournament.png']").first().parent().find('tr').eq(1).find('td').eq(1).text();
+            if (typeof text_td !== typeof undefined && text_td !== false) {
+              max_wins = text_td.trim();
             }
           }
           if (trophies.includes('5,2') || trophies.includes('5,3') || trophies.includes('5,4') || trophies.includes('5,5') || trophies.includes('5,6') || trophies.includes('5,7') || trophies.includes('5,8') || trophies.includes('5,9') || trophies.includes('6,') || trophies.includes('7,') || trophies.includes('N/A')) {
@@ -117,6 +122,10 @@ setInterval(function() {
                         "value": trophies
                       },
                       {
+                        "name": "Max Wins",
+                        "value": max_wins
+                      },
+                      {
                         "name": "Player Profile",
                         "value": player_profile
                       },
@@ -133,7 +142,7 @@ setInterval(function() {
                       "url": goqrme
                     },
                     "footer": {
-                      "text": moment(temp_obj.data_time_ms).format('dddd, MMMM Do, YYYY h:mm:ss A') + " (UTC)"
+                      "text": moment(temp_obj.data_time_ms).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z"
                     }
                   }
                 ]
