@@ -67,7 +67,8 @@ setInterval(function() {
     if (temp_data_expanded_url.startsWith(process.env.URL_FILTER) && temp_data_expanded_url.includes('tag')) {
       var d = new Date(temp_obj.data_time_ms);
       var h = d.getHours();
-      var time_stamp = (' ' + d.toISOString()).slice(1);
+      var iso = d.toISOString();
+      var time_stamp = iso.trim();
       var re = /.*tag=(.*?)&.*/;
       var hashtag = temp_obj.data_expanded_url.replace(re, "$1");
       if (hashtag && hashtag != 'Y8LRCLVC' && hashtag != 'LY8LJYU9' && h < 12) {
