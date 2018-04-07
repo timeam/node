@@ -82,7 +82,10 @@ setInterval(function() {
           var url = process.env.WEBHOOK_FILTERED_URL;
           var player_name = "";
           var trophies = "N/A";
+          var previous_season = "N/A";
+          var previous_season_best = "";
           var max_wins = "N/A";
+          var cards_won = "N/A";
           if (err){
             url = process.env.WEBHOOK_UNKNOWN_URL;
             console.log(err);
@@ -96,9 +99,21 @@ setInterval(function() {
             if (typeof text_item !== typeof undefined && text_item !== false) {
               trophies = text_item.trim().replace(/\s{2,}/g,' ');
             }
-            var text_td = $("img[src$='tournament.png']").first().parent().find('tr').eq(1).find('td').eq(1).text();
-            if (typeof text_td !== typeof undefined && text_td !== false) {
-              max_wins = text_td.trim();
+            var text_td_previous_season = $("img[src$='rank.png']").first().parent().find('tr').eq(7).find('td').eq(1).text();
+            if (typeof text_td_previous_season !== typeof undefined && text_td_previous_season !== false) {
+              previous_season = text_td_previous_season.trim().replace(/\s{2,}/g,' ');
+            }
+            var text_td_previous_season_best = $("img[src$='rank.png']").first().parent().find('tr').eq(8).find('td').eq(1).text();
+            if (typeof text_td_previous_season_best !== typeof undefined && text_td_previous_season_best !== false) {
+              previous_season_best = " / " + text_td_previous_season_best.trim().replace(/\s{2,}/g,' ');
+            }
+            var text_td_max_wins = $("img[src$='tournament.png']").first().parent().find('tr').eq(1).find('td').eq(1).text();
+            if (typeof text_td_max_wins !== typeof undefined && text_td_max_wins !== false) {
+              max_wins = text_td_max_wins.trim().replace(/\s{2,}/g,' ');
+            }
+            var text_td_cards_won = $("img[src$='tournament.png']").first().parent().find('tr').eq(2).find('td').eq(1).text();
+            if (typeof text_td_cards_won !== typeof undefined && text_td_cards_won !== false) {
+              cards_won = text_td_cards_won.trim().replace(/\s{2,}/g,' ');
             }
           }
           if (trophies.includes('5,2') || trophies.includes('5,3') || trophies.includes('5,4') || trophies.includes('5,5') || trophies.includes('5,6') || trophies.includes('5,7') || trophies.includes('5,8') || trophies.includes('5,9') || trophies.includes('6,') || trophies.includes('7,') || trophies.includes('N/A')) {
@@ -122,8 +137,16 @@ setInterval(function() {
                         "value": trophies
                       },
                       {
+                        "name": "Previous Season",
+                        "value": previous_season + previous_season_best
+                      },
+                      {
                         "name": "Max Wins",
                         "value": max_wins
+                      },
+                      {
+                        "name": "Cards Won",
+                        "value": cards_won
                       },
                       {
                         "name": "Player Profile",
