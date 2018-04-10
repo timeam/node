@@ -36,12 +36,16 @@ setInterval(function() {
               if (ReplyingToContextBelowAuthor.length == 0 && twitter_atreply.length == 0) {
                 var permalink_path = $(this).attr('data-permalink-path');
                 var data_time_ms = parseInt($(this).find("small.time span.js-short-timestamp").attr("data-time-ms"));
+                var items = {};
                 $(this).find('a').each(function (index, element) {
                   var data_expanded_url = $(element).attr('data-expanded-url');
                   if (typeof data_expanded_url !== typeof undefined && data_expanded_url !== false) {
-                    my_array.push({permalink_path:permalink_path, data_time_ms:data_time_ms, data_expanded_url:data_expanded_url});
+                    items[data_expanded_url] = true;
                   }
                 });
+                for(var i in items) {
+                  my_array.push({permalink_path:permalink_path, data_time_ms:data_time_ms, data_expanded_url:i});
+                }
               }
             });
           }
