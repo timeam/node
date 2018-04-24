@@ -190,7 +190,7 @@ setInterval(function() {
             }, function (error, response, body) {
               if (error){
                 console.log(error);
-                my_array.unshift(temp_obj);
+                //my_array.unshift(temp_obj);
               }
             });
           }
