@@ -24,7 +24,7 @@ var customHeaderRequest = request.defaults({
 
 setInterval(function() {
   if (min_position) {
-    customHeaderRequest.get(process.env.UPDATE_URL+min_position, function(err, resp, body){
+    customHeaderRequest.get(process.env.UPDATE_URL+min_position.replace("+", "%2B"), function(err, resp, body){
       try {
         var myObj = JSON.parse(body);
         if (typeof myObj.max_position !== typeof undefined && myObj.max_position !== false) {
