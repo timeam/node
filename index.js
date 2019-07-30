@@ -23,6 +23,8 @@ app.get('/', function (req, res) {
 app.get('/debug', function (req, res) {
   customHeaderRequest.get(process.env.SEARCH_URL, function(err, resp, body){
     res.send(body);
+  }).on('error', function(err) {
+    console.error(err);
   });
 });
 
