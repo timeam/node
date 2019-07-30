@@ -70,11 +70,11 @@ setInterval(function() {
         } catch(e) {
         }
       });
-      update_req.on('error', (e) => {
-        console.error(e);
-      });
-      update_req.end();
     });
+    update_req.on('error', (e) => {
+      console.error(e);
+    });
+    update_req.end();
   } else {
     const search_req = https.request(search_options, (res) => {
       res.on('data', (d) => {
