@@ -8,6 +8,10 @@ var app = express();
 var min_position = "";
 var my_array = new Array();
 
+var customHeaderRequest = request.defaults({
+    headers: {'User-Agent': process.env.USER_AGENT }
+})
+
 app.get('/', function (req, res) {
   if (min_position) {
     res.send((new Date).toISOString() + ' ' + min_position);
@@ -16,11 +20,13 @@ app.get('/', function (req, res) {
   }
 });
 
-app.listen(process.env.PORT || 3000);
+app.get('/debug', function (req, res) {
+  customHeaderRequest.get(process.env.SEARCH_URL, function(err, resp, body){
+    res.send(body);
+  });
+});
 
-var customHeaderRequest = request.defaults({
-    headers: {'User-Agent': process.env.USER_AGENT }
-})
+app.listen(process.env.PORT || 3000);
 
 setInterval(function() {
   if (min_position) {
