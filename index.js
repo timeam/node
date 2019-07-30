@@ -84,11 +84,11 @@ setInterval(function() {
           min_position = attr_min_pos;
         }
       });
-      search_req.on('error', (e) => {
-        console.error(e);
-      });
-      search_req.end();
     });
+    search_req.on('error', (e) => {
+      console.error(e);
+    });
+    search_req.end();
   }
 }, 30000); // every 30 seconds (30000)
 
