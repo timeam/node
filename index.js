@@ -6,7 +6,7 @@ const jsesc = require('jsesc');
 const https = require('https');
 
 var app = express();
-var min_position = "";
+var min_position = "thGAVUV0VFVBaGgKjJpLSThSAWgICm9cyDs4sgEjUAFQAlAFUAFQAA";
 var my_array = new Array();
 
 var customHeaderRequest = request.defaults({
@@ -112,7 +112,7 @@ setInterval(function() {
       var h = d.getHours();
       var re = /.*tag=(.*?)&.*/;
       var hashtag = temp_obj.data_expanded_url.replace(re, "$1");
-      if (hashtag && hashtag != 'Y8LRCLVC' && h < 12) {
+      if (hashtag && hashtag != 'Y8LRCLVC') {
         var player_profile =
           "<" + encodeURI(process.env.SR_URL+hashtag) + ">\n" +
           "<" + encodeURI(process.env.DS_URL+hashtag) + ">\n" +
