@@ -29,8 +29,7 @@ const search_options = {
   path: process.env.SEARCH_PATH,
   method: 'GET',
   headers: {
-    'User-Agent': process.env.USER_AGENT,
-    'X-Requested-With': 'XMLHttpRequest'
+    'User-Agent': process.env.USER_AGENT
   }
 };
 
@@ -42,8 +41,7 @@ setInterval(function() {
       path: process.env.UPDATE_PATH+encodeURIComponent(min_position),
       method: 'GET',
       headers: {
-        'User-Agent': process.env.USER_AGENT,
-        'X-Requested-With': 'XMLHttpRequest'
+        'User-Agent': process.env.USER_AGENT
       }
     };
     const update_req = https.request(update_options, (res) => {
