@@ -10,7 +10,7 @@ var min_position = "";
 var my_array = new Array();
 
 var customHeaderRequest = request.defaults({
-    headers: {'User-Agent': process.env.USER_AGENT }
+    headers: {'User-Agent': process.env.USER_AGENT, 'X-Requested-With': 'XMLHttpRequest' }
 })
 
 app.get('/', function (req, res) {
