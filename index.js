@@ -10,7 +10,7 @@ var min_position = "";
 var my_array = new Array();
 
 var customHeaderRequest = request.defaults({
-    headers: {'User-Agent': process.env.USER_AGENT, 'X-Requested-With': 'XMLHttpRequest' }
+    headers: {'User-Agent': process.env.USER_AGENT }
 })
 
 app.get('/', function (req, res) {
@@ -27,7 +27,11 @@ const search_options = {
   hostname: process.env.SEARCH_HOSTNAME,
   port: 443,
   path: process.env.SEARCH_PATH,
-  method: 'GET'
+  method: 'GET',
+  headers: {
+    'User-Agent': process.env.USER_AGENT,
+    'X-Requested-With': 'XMLHttpRequest'
+  }
 };
 
 setInterval(function() {
@@ -36,7 +40,11 @@ setInterval(function() {
       hostname: process.env.UPDATE_HOSTNAME,
       port: 443,
       path: process.env.UPDATE_PATH+encodeURIComponent(min_position),
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        'User-Agent': process.env.USER_AGENT,
+        'X-Requested-With': 'XMLHttpRequest'
+      }
     };
     const update_req = https.request(update_options, (res) => {
       res.setEncoding("utf8"); // makes sure that "chunk" is a string.
