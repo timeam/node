@@ -78,7 +78,6 @@ setInterval(function() {
   update_req.end();
 }, 30000); // every 30 seconds (30000)
 
-
 setInterval(function() {
   var temp_obj = my_array.pop();
   if (temp_obj != undefined) {
@@ -90,17 +89,17 @@ setInterval(function() {
       var hashtag = temp_obj.data_expanded_url.replace(re, "$1");
       if (hashtag && hashtag != 'Y8LRCLVC' && h < 12) {
         var player_profile =
-          "<" + encodeURI(process.env.SR_URL+hashtag) + ">\n" +
-          "<" + encodeURI(process.env.DS_URL+hashtag) + ">\n" +
-          "<" + encodeURI(process.env.RA_URL+hashtag) + ">";
+          "<" + encodeURI(process.env.SR_URL + hashtag) + ">\n" +
+          "<" + encodeURI(process.env.DS_URL + hashtag) + ">\n" +
+          "<" + encodeURI(process.env.RA_URL + hashtag) + ">";
         var friend_link = encodeURI(temp_obj.data_expanded_url);
-        var goqrme = encodeURI(process.env.QR_URL)+encodeURIComponent(temp_obj.data_expanded_url);
+        var goqrme = encodeURI(process.env.QR_URL) + encodeURIComponent(temp_obj.data_expanded_url);
         var player_post =
-            "<" + encodeURI(process.env.UPDATE_URL_DOMAIN+"/"+temp_obj.data_screen_name) + ">\n" +
-            encodeURI(process.env.UPDATE_URL_DOMAIN+temp_obj.permalink_path);
-        customHeaderRequest.get(process.env.RA_URL+hashtag, function(err, resp, bdy){
+          "<" + encodeURI(process.env.UPDATE_URL_DOMAIN + temp_obj.data_screen_name) + ">\n" +
+          encodeURI(process.env.UPDATE_URL_DOMAIN + temp_obj.permalink_path);
+        customHeaderRequest.get(process.env.RA_URL + hashtag, function(err, resp, bdy) {
           var url = process.env.WEBHOOK_FILTERED_URL;
-          var player_name = "";
+          var player_name = "N/A";
           var trophies = "N/A";
           var best_season = "N/A";
           var best_season_rank = "N/A";
@@ -110,50 +109,50 @@ setInterval(function() {
           var max_wins = "N/A";
           var cards_won = "N/A";
           var experience = "N/A";
-          if (err){
+          if (err) {
             url = process.env.WEBHOOK_UNKNOWN_URL;
             console.log(err);
           } else {
             const $ = cheerio.load(bdy);
             var text_header = $('h1.header').first().text();
-            if (typeof text_header !== typeof undefined && text_header !== false) {
+            if (typeof text_header !== 'undefined' && text_header !== false && text_header !== "") {
               player_name = text_header.trim() + ' ';
             }
             var text_item = $('div.horizontal').first().children().first().text();
-            if (typeof text_item !== typeof undefined && text_item !== false) {
-              trophies = text_item.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_item !== 'undefined' && text_item !== false && text_item !== "") {
+              trophies = text_item.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_best_season_rank = $("img[src$='rank.png']").first().parent().find('tr').eq(2).find('td').eq(1).text();
-            if (typeof text_td_best_season_rank !== typeof undefined && text_td_best_season_rank !== false) {
-              best_season_rank = text_td_best_season_rank.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_best_season_rank !== 'undefined' && text_td_best_season_rank !== false && text_td_best_season_rank !== "") {
+              best_season_rank = text_td_best_season_rank.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_best_season = $("img[src$='rank.png']").first().parent().find('tr').eq(3).find('td').eq(1).text();
-            if (typeof text_td_best_season !== typeof undefined && text_td_best_season !== false) {
-              best_season = text_td_best_season.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_best_season !== 'undefined' && text_td_best_season !== false && text_td_best_season !== "") {
+              best_season = text_td_best_season.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_best_season_date = $("img[src$='rank.png']").first().parent().find('tr').eq(4).find('td').eq(1).text();
-            if (typeof text_td_best_season_date !== typeof undefined && text_td_best_season_date !== false) {
-              best_season_date = text_td_best_season_date.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_best_season_date !== 'undefined' && text_td_best_season_date !== false && text_td_best_season_date !== "") {
+              best_season_date = text_td_best_season_date.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_previous_season = $("img[src$='rank.png']").first().parent().find('tr').eq(-2).find('td').eq(1).text();
-            if (typeof text_td_previous_season !== typeof undefined && text_td_previous_season !== false) {
-              previous_season = text_td_previous_season.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_previous_season !== 'undefined' && text_td_previous_season !== false && text_td_previous_season !== "") {
+              previous_season = text_td_previous_season.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_previous_season_best = $("img[src$='rank.png']").first().parent().find('tr').eq(-1).find('td').eq(1).text();
-            if (typeof text_td_previous_season_best !== typeof undefined && text_td_previous_season_best !== false) {
-              previous_season_best = " / " + text_td_previous_season_best.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_previous_season_best !== 'undefined' && text_td_previous_season_best !== false && text_td_previous_season_best !== "") {
+              previous_season_best = " / " + text_td_previous_season_best.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_max_wins = $("img[src$='tournament.png']").first().parent().find('tr').eq(1).find('td').eq(1).text();
-            if (typeof text_td_max_wins !== typeof undefined && text_td_max_wins !== false) {
-              max_wins = text_td_max_wins.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_max_wins !== 'undefined' && text_td_max_wins !== false && text_td_max_wins !== "") {
+              max_wins = text_td_max_wins.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_cards_won = $("img[src$='tournament.png']").first().parent().find('tr').eq(2).find('td').eq(1).text();
-            if (typeof text_td_cards_won !== typeof undefined && text_td_cards_won !== false) {
-              cards_won = text_td_cards_won.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_cards_won !== 'undefined' && text_td_cards_won !== false && text_td_cards_won !== "") {
+              cards_won = text_td_cards_won.trim().replace(/\s{2,}/g, ' ');
             }
             var text_td_experience = $("img[src$='cards.png']").first().parent().find('tr').eq(0).find('td').eq(1).text();
-            if (typeof text_td_experience !== typeof undefined && text_td_experience !== false) {
-              experience = text_td_experience.trim().replace(/\s{2,}/g,' ');
+            if (typeof text_td_experience !== 'undefined' && text_td_experience !== false && text_td_experience !== "") {
+              experience = text_td_experience.trim().replace(/\s{2,}/g, ' ');
             }
           }
           if (trophies.includes('7,') || trophies.includes('8,') || trophies.includes('N/A')) {
@@ -163,71 +162,68 @@ setInterval(function() {
               json: {
                 "username": "Tweet",
                 "avatar_url": "https://i.imgur.com/q3iAY1B.png",
-                "embeds": [
-                  {
-                    "author": {
-                      "name": player_name + "#" + hashtag,
-                      "icon_url": "https://i.imgur.com/nMRazCT.png"
+                "embeds": [{
+                  "author": {
+                    "name": player_name + "#" + hashtag,
+                    "icon_url": "https://i.imgur.com/nMRazCT.png"
+                  },
+                  "color": 5746931,
+                  "timestamp": moment(temp_obj.data_time_ms).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z",
+                  "fields": [{
+                      "name": "Trophies",
+                      "value": trophies
                     },
-                    "color": 5746931,
-                    "timestamp": moment(temp_obj.data_time_ms).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z",
-                    "fields": [
-                      {
-                        "name": "Trophies",
-                        "value": trophies
-                      },
-                      {
-                        "name": "Best Season Rank",
-                        "value": best_season_rank
-                      },
-                      {
-                        "name": "Best Season Trophies",
-                        "value": best_season
-                      },
-                      {
-                        "name": "Best Season Date",
-                        "value": best_season_date
-                      },
-                      {
-                        "name": "Previous Season",
-                        "value": previous_season + previous_season_best
-                      },
-                      {
-                        "name": "Max Wins",
-                        "value": max_wins
-                      },
-                      {
-                        "name": "Cards Won",
-                        "value": cards_won
-                      },
-                      {
-                        "name": "Experience",
-                        "value": experience
-                      },
-                      {
-                        "name": "Player Profile",
-                        "value": player_profile
-                      },
-                      {
-                        "name": "Post",
-                        "value": player_post
-                      },
-                      {
-                        "name": "Friend Link",
-                        "value": friend_link
-                      }
-                    ],
-                    "image": {
-                      "url": goqrme
+                    {
+                      "name": "Best Season Rank",
+                      "value": best_season_rank
                     },
-                    "footer": {
-                      "text": moment(temp_obj.data_time_ms).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z"
+                    {
+                      "name": "Best Season Trophies",
+                      "value": best_season
+                    },
+                    {
+                      "name": "Best Season Date",
+                      "value": best_season_date
+                    },
+                    {
+                      "name": "Previous Season",
+                      "value": previous_season + previous_season_best
+                    },
+                    {
+                      "name": "Max Wins",
+                      "value": max_wins
+                    },
+                    {
+                      "name": "Cards Won",
+                      "value": cards_won
+                    },
+                    {
+                      "name": "Experience",
+                      "value": experience
+                    },
+                    {
+                      "name": "Player Profile",
+                      "value": player_profile
+                    },
+                    {
+                      "name": "Post",
+                      "value": player_post
+                    },
+                    {
+                      "name": "Friend Link",
+                      "value": friend_link
                     }
+                  ],
+                  "image": {
+                    "url": goqrme
+                  },
+                  "footer": {
+                    "text": moment(temp_obj.data_time_ms).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z"
                   }
-                ]
+                }]
               }
-            }, function (error, response, body) {
-              if (error){
+            }, function(error, response, body) {
+              if (error) {
                 console.log(error);
                 //my_array.unshift(temp_obj);
               }
