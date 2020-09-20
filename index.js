@@ -8,6 +8,8 @@ const https = require('https');
 var app = express();
 var min_position = "";
 var my_array = new Array();
+var permalink_path_array = new Array();
+var ONE_HOUR = 60 * 60 * 1000; /* ms */
 
 var customHeaderRequest = request.defaults({
     headers: {'User-Agent': process.env.USER_AGENT }
@@ -27,48 +29,47 @@ setInterval(function() {
   const update_options = {
     hostname: process.env.UPDATE_HOSTNAME,
     port: 443,
-    path: process.env.UPDATE_PATH+encodeURIComponent(min_position),
+    path: process.env.UPDATE_PATH,
     method: 'GET',
     headers: {
-    'User-Agent': process.env.USER_AGENT
+      'User-Agent': process.env.USER_AGENT
     }
   };
   const update_req = https.request(update_options, (res) => {
     res.setEncoding("utf8"); // makes sure that "chunk" is a string.
     let updateFullBody = "";
     res.on("data", data => {
-    updateFullBody += data;
+      updateFullBody += data;
     });
     res.on("end", () => {
-    try {
-      var myObj = JSON.parse(updateFullBody);
-      if (typeof myObj.max_position !== typeof undefined && myObj.max_position !== false) {
-      min_position = myObj.max_position;
-      if (typeof myObj.items_html !== typeof undefined && myObj.items_html !== false) {
-        const $ = cheerio.load(myObj.items_html);
-        $('.js-stream-tweet').each(function(i, elem) {
-        var ReplyingToContextBelowAuthor = $(this).find(".ReplyingToContextBelowAuthor");
-        var twitter_atreply = $(this).find(".twitter-atreply");
-        if (ReplyingToContextBelowAuthor.length == 0 && twitter_atreply.length == 0) {
-          var permalink_path = $(this).attr('data-permalink-path');
-          var data_screen_name = $(this).attr('data-screen-name');
-          var data_time_ms = parseInt($(this).find("small.time span.js-short-timestamp").attr("data-time-ms"));
-          var items = {};
-          $(this).find('a').each(function (index, element) {
-          var data_expanded_url = $(element).attr('data-expanded-url');
-          if (typeof data_expanded_url !== typeof undefined && data_expanded_url !== false) {
-            items[data_expanded_url] = true;
+      try {
+        const $ = cheerio.load(updateFullBody);
+        $('.timeline-item').each(function(i, elem) {
+          var permalink_path = $(this).find(".tweet-link").attr("href");
+          var data_screen_name = $(this).find(".fullname-and-username .username").attr("href");
+          var datestring = $(this).find(".tweet-date a").attr("title");
+          var parts = datestring.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{2}):(\d{2})/); //19/9/2020, 12:33:38
+          var data_time_ms = Date.UTC(+parts[3], +parts[2] - 1, +parts[1], +parts[4], +parts[5], +parts[6]);
+          if (typeof permalink_path !== 'undefined' && permalink_path !== false && permalink_path !== "" && permalink_path_array.indexOf(permalink_path) == -1 && ((new Date) - data_time_ms) < ONE_HOUR) {
+            permalink_path_array.push(permalink_path);
+            var items = {};
+            $(this).find('.tweet-content a').each(function(index, element) {
+              var data_expanded_url = $(element).attr('href');
+              if (typeof data_expanded_url !== typeof undefined && data_expanded_url !== false) {
+                items[data_expanded_url] = true;
+              }
+            });
+            for (var i in items) {
+              my_array.push({
+                permalink_path: permalink_path,
+                data_screen_name: data_screen_name,
+                data_time_ms: data_time_ms,
+                data_expanded_url: i
+              });
+            }
           }
-          });
-          for(var i in items) {
-          my_array.push({permalink_path:permalink_path, data_screen_name:data_screen_name, data_time_ms:data_time_ms, data_expanded_url:i});
-          }
-        }
         });
-      }
-      }
-    } catch(e) {
-    }
+      } catch (e) {}
     });
   });
   update_req.on('error', (e) => {
