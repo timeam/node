@@ -5,6 +5,8 @@ const cheerio = require('cheerio');
 const jsesc = require('jsesc');
 const https = require('https');
 
+const DEBUG_MODE = (process.env.DEBUG.toUpperCase() === "TRUE");
+
 var app = express();
 var min_position = "";
 var my_array = new Array();
@@ -90,7 +92,7 @@ setInterval(function() {
       var h = d.getHours();
       var re = /.*tag=(.*?)&.*/;
       var hashtag = temp_obj.data_expanded_url.replace(re, "$1");
-      if (hashtag && ((hashtag != 'Y8LRCLVC' && h < 12) || process.env.DEBUG.toUpperCase() === "TRUE")) {
+      if (hashtag && ((hashtag != 'Y8LRCLVC' && h < 12) || DEBUG_MODE)) {
         var player_profile =
           "<" + encodeURI(process.env.SR_URL + hashtag) + ">\n" +
           "<" + encodeURI(process.env.DS_URL + hashtag) + ">\n" +
@@ -171,8 +173,8 @@ setInterval(function() {
               if (typeof text_td_experience !== 'undefined' && text_td_experience !== false && text_td_experience !== "") {
                 experience = text_td_experience.trim().replace(/\s{2,}/g, ' ');
               }
-              if (trophies.includes('7,') || trophies.includes('8,') || trophies.includes('N/A') || process.env.DEBUG.toUpperCase() === "TRUE") {
-                if (process.env.DEBUG.toUpperCase() === "TRUE") {
+              if (trophies.includes('7,') || trophies.includes('8,') || trophies.includes('N/A') || DEBUG_MODE) {
+                if (DEBUG_MODE) {
                   url = process.env.WEBHOOK_DEBUG_URL;
                 }
                 request({
