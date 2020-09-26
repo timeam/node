@@ -10,10 +10,11 @@ var min_position = "";
 var my_array = new Array();
 var permalink_path_array = new Array();
 var ONE_HOUR = 60 * 60 * 1000; /* ms */
+var USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko';
 
 var customHeaderRequest = request.defaults({
   headers: {
-    'User-Agent': process.env.USER_AGENT
+    'User-Agent': USER_AGENT
   }
 })
 
@@ -34,7 +35,7 @@ setInterval(function() {
     path: process.env.UPDATE_PATH,
     method: 'GET',
     headers: {
-      'User-Agent': process.env.USER_AGENT
+      'User-Agent': USER_AGENT
     }
   };
   const update_req = https.request(update_options, (res) => {
@@ -89,7 +90,7 @@ setInterval(function() {
       var h = d.getHours();
       var re = /.*tag=(.*?)&.*/;
       var hashtag = temp_obj.data_expanded_url.replace(re, "$1");
-      if (hashtag && hashtag != 'Y8LRCLVC' && h < 12) {
+      if (hashtag && ((hashtag != 'Y8LRCLVC' && h < 12) || process.env.DEBUG.toUpperCase() === "TRUE")) {
         var player_profile =
           "<" + encodeURI(process.env.SR_URL + hashtag) + ">\n" +
           "<" + encodeURI(process.env.DS_URL + hashtag) + ">\n" +
@@ -105,7 +106,7 @@ setInterval(function() {
           path: process.env.RA_PATH + hashtag,
           method: 'GET',
           headers: {
-            'User-Agent': process.env.USER_AGENT
+            'User-Agent': USER_AGENT
           }
         };
         const ra_req = https.request(ra_options, (res) => {
@@ -135,6 +136,8 @@ setInterval(function() {
               var text_item = $('div.horizontal').first().children().first().text();
               if (typeof text_item !== 'undefined' && text_item !== false && text_item !== "") {
                 trophies = text_item.trim().replace(/\s{2,}/g, ' ');
+              } else {
+                url = process.env.WEBHOOK_UNKNOWN_URL;
               }
               var text_td_best_season_rank = $("img[src$='rank.png']").first().parent().find('tr').eq(2).find('td').eq(1).text();
               if (typeof text_td_best_season_rank !== 'undefined' && text_td_best_season_rank !== false && text_td_best_season_rank !== "") {
@@ -168,7 +171,10 @@ setInterval(function() {
               if (typeof text_td_experience !== 'undefined' && text_td_experience !== false && text_td_experience !== "") {
                 experience = text_td_experience.trim().replace(/\s{2,}/g, ' ');
               }
-              if (trophies.includes('7,') || trophies.includes('8,') || trophies.includes('N/A')) {
+              if (trophies.includes('7,') || trophies.includes('8,') || trophies.includes('N/A') || process.env.DEBUG.toUpperCase() === "TRUE") {
+                if (process.env.DEBUG.toUpperCase() === "TRUE") {
+                  url = process.env.WEBHOOK_DEBUG_URL;
+                }
                 request({
                   url: url,
                   method: "POST",
@@ -268,4 +274,4 @@ setInterval(function() {
   if (h == 11) {
     customHeaderRequest.get(process.env.PM_URL, function(err, resp, body) {});
   }
-}, 300000); // every 5 minutes (300000) 
+}, 300000); // every 5 minutes (300000)
