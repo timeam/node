@@ -55,7 +55,7 @@ setInterval(function() {
           var datestring = $(this).find(".tweet-date a").attr("title");
           var parts = datestring.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{2}):(\d{2})/); //19/9/2020, 12:33:38
           var data_time_ms = Date.UTC(+parts[3], +parts[2] - 1, +parts[1], +parts[4], +parts[5], +parts[6]);
-          if (typeof permalink_path !== 'undefined' && permalink_path !== false && permalink_path !== "" && permalink_path_array.indexOf(permalink_path) == -1 && ((new Date) - data_time_ms) < ONE_HOUR) {
+          if (typeof permalink_path !== 'undefined' && permalink_path !== false && permalink_path !== "" && permalink_path_array.indexOf(permalink_path) == -1 && (((new Date) - data_time_ms) < ONE_HOUR || DEBUG_MODE)) {
             permalink_path_array.push(permalink_path);
             var items = {};
             $(this).find('.tweet-content a').each(function(index, element) {
