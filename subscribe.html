@@ -1,0 +1,26 @@
+<html>
+   <head>
+      <title></title>
+      <script type="text/javascript" language="javascript">
+         function validateForm() {
+            var sourceText = document.forms["subscribe"]["email"].value;
+            document.forms["subscribe"]["email"].value = "";
+            if (sourceText) {
+               var links = sourceText.match(/[A-Za-z]{2,3}\?tag=.*?platform=[a-zA-Z0-9_\-]*/ig);
+
+               if (links != null) {
+                     document.forms["subscribe"]["email"].value = links.toString();
+                     return true;
+               }
+            }
+            return false;
+         }
+      </script>
+   </head>
+   <body>
+      <form name="subscribe" id="subscribe" action="/subscription" onsubmit="return validateForm()" method="post">
+         <textarea name="email" id="email"></textarea><br>
+         <input type="submit" value="Subscribe">
+      </form>
+   </body>
+</html>
