@@ -98,7 +98,7 @@ setInterval(function() {
           });
           res.on("end", () => {
             try {
-              var url = process.env.WEBHOOK_MANUAL_URL;
+              var url = process.env.WEBHOOK_FILTERED_URL;
               var player_name = "N/A";
               var trophies = "N/A";
               var highest_trophies = 0;
