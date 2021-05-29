@@ -139,10 +139,11 @@ setInterval(async function() {
               experience = api_json_data['expLevel'];
             }
           } else {
+            url = process.env.WEBHOOK_UNKNOWN_URL;
             console.log(API_players_response.statusCode);
           }
       
-          if (highest_trophies >= 7000 || DEBUG_MODE) {
+          if (highest_trophies >= 7000 || process.env.WEBHOOK_UNKNOWN_URL === url || DEBUG_MODE) {
             if (DEBUG_MODE) {
               url = process.env.WEBHOOK_DEBUG_URL;
             }
