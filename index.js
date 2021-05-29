@@ -98,10 +98,11 @@ setInterval(async function() {
               player_name = api_json_data['name'];
             }
             if ('trophies' in api_json_data) {
-              trophies = api_json_data['trophies'];
+              trophies = Number(api_json_data['trophies']);
             }
             if ('bestTrophies' in api_json_data) {
               highest_trophies = api_json_data['bestTrophies'];
+              trophies = trophies + " / " + Number(highest_trophies);
             } else {
               url = process.env.WEBHOOK_UNKNOWN_URL;
             }  
