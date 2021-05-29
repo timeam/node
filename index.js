@@ -253,43 +253,44 @@ setInterval(async function() {
       temp_source_json_url = process.env.SOURCE_JSON_URL.replace("typed_query" , "typed_query" + refresh);
       const temp_source_json_url_response = await got(temp_source_json_url, {
         headers: {
-            "x-guest-token": source_token,
-            "Authorization": "Bearer " + process.env.SOURCE_BEARER,
-            "Referer": process.env.SOURCE_URL
+          "x-guest-token": source_token,
+          "Authorization": "Bearer " + process.env.SOURCE_BEARER,
+          "Referer": process.env.SOURCE_URL
         }
       });
       var json_data = JSON.parse(temp_source_json_url_response.body);
       if (json_data.globalObjects && json_data.globalObjects.tweets) {
-          var json_root = json_data["globalObjects"]["tweets"];
-          for (item in json_root) {
-              var article = json_root[item]
-              if (article.entities) {
-                var date_time = new Date(Date.parse(article["created_at"].replace(/( \+)/, ' UTC$1')));
-                var h = date_time.getUTCHours();
-                if((START_TIME <= h && h < END_TIME && refresh) || DEBUG_MODE) {
-                  for (url in article["entities"]["urls"]) {
-                    processData(article["entities"]["urls"][url]["expanded_url"]);
-                  }
+        var json_root = json_data["globalObjects"]["tweets"];
+        for (item in json_root) {
+          var article = json_root[item]
+          if (article.entities) {
+            var date_time = new Date(Date.parse(article["created_at"].replace(/( \+)/, ' UTC$1')));
+            var h = date_time.getUTCHours();
+            if((START_TIME <= h && h < END_TIME && refresh) || DEBUG_MODE) {
+              for (url in article["entities"]["urls"]) {
+                processData(article["entities"]["urls"][url]["expanded_url"]);
               }
+            }
           }
+        }
       }
       
       if (json_data.timeline && json_data.timeline.instructions) {
-          var entries;
-          for (instruction in json_data["timeline"]["instructions"]) {
-              if ("addEntries" in json_data["timeline"]["instructions"][instruction]) {
-                  entries = json_data["timeline"]["instructions"][instruction]["addEntries"]["entries"];
-              } else if ("replaceEntry" in json_data["timeline"]["instructions"][instruction]) {
-                  entries = [json_data["timeline"]["instructions"][instruction]["replaceEntry"]["entry"]];
-              } else {
-                  continue;
-              }
-              for (entry in entries) {
-                  if (entries[entry]["entryId"] == "sq-cursor-top" || entries[entry]["entryId"].startsWith("cursor-top-")) {
-                      refresh = "&cursor=" + encodeURIComponent(entries[entry]["content"]["operation"]["cursor"]["value"]);
-                  }
-              }
+        var entries;
+        for (instruction in json_data["timeline"]["instructions"]) {
+          if ("addEntries" in json_data["timeline"]["instructions"][instruction]) {
+            entries = json_data["timeline"]["instructions"][instruction]["addEntries"]["entries"];
+          } else if ("replaceEntry" in json_data["timeline"]["instructions"][instruction]) {
+            entries = [json_data["timeline"]["instructions"][instruction]["replaceEntry"]["entry"]];
+          } else {
+            continue;
           }
+          for (entry in entries) {
+            if (entries[entry]["entryId"] == "sq-cursor-top" || entries[entry]["entryId"].startsWith("cursor-top-")) {
+                refresh = "&cursor=" + encodeURIComponent(entries[entry]["content"]["operation"]["cursor"]["value"]);
+            }
+          }
+        }
       }
     } else {
       const source_url_response = await got(process.env.SOURCE_URL);
