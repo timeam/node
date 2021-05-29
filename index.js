@@ -31,7 +31,7 @@ app.use(bodyParser.json())
 
 app.get('/', function(req, res) {
   if (source_token) {
-    res.send((new Date).toISOString() + ' ' + source_token);
+    res.send((new Date).toISOString() + ' ' + source_token + refresh);
   } else {
     res.send((new Date).toISOString() + ' waiting...');
   }
@@ -266,16 +266,10 @@ setInterval(async function() {
               if (article.entities) {
                 var date_time = new Date(Date.parse(article["created_at"].replace(/( \+)/, ' UTC$1')));
                 var h = date_time.getUTCHours();
-                if(START_TIME <= h && h < END_TIME && refresh) {
-                  var items = {};
+                if((START_TIME <= h && h < END_TIME && refresh) || DEBUG_MODE) {
                   for (url in article["entities"]["urls"]) {
-                    if ("expanded_url" in article["entities"]["urls"][url]) {
-                      items[article["entities"]["urls"][url]["expanded_url"]] = true;
-                    }
+                    processData(article["entities"]["urls"][url]["expanded_url"]);
                   }
-                  for (var i in items) {
-                    processData(i);
-                  }                            }
               }
           }
       }
