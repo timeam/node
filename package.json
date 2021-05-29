@@ -3,10 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "4.17.1",
-    "request": "2.88.0",
     "moment": "2.24.0",
     "jsesc": "2.5.2",
-    "cheerio": "0.22.0",
     "path": "0.12.7",
     "body-parser": "1.19.0",
     "got": "^11.8.2"
