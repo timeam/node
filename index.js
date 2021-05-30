@@ -249,7 +249,7 @@ setInterval(async function() {
           if (article.entities) {
             var date_time = new Date(Date.parse(article["created_at"].replace(/( \+)/, ' UTC$1')));
             var h = date_time.getUTCHours();
-            if((START_TIME <= h && h < END_TIME && refresh) || DEBUG_MODE) {
+            if((START_TIME <= h && h < END_TIME && refresh.length > 0) || DEBUG_MODE) {
               for (url in article["entities"]["urls"]) {
                 processData(article["entities"]["urls"][url]["expanded_url"]);
               }
