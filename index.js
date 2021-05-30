@@ -8,7 +8,7 @@ const got = require("got");
 
 const DEBUG_MODE = (process.env.DEBUG.toUpperCase() === "TRUE");
 const START_TIME = Number(process.env.START_TIME);
-const END_TIME = Number(process.env.START_TIME);
+const END_TIME = Number(process.env.END_TIME);
 
 var app = express();
 var my_array = new Array();
