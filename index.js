@@ -12,6 +12,7 @@ const END_TIME = Number(process.env.START_TIME);
 
 var app = express();
 var my_array = new Array();
+var log_array = new Array();
 var ONE_HOUR = 60 * 60 * 1000; /* ms */
 var source_token = "";
 var refresh = "";
@@ -38,6 +39,10 @@ app.post('/subscription', function(req, res){
   res.redirect('/');
 });
 
+app.get('/log', function (req, res) {
+  res.send(log_array);
+});
+
 app.listen(process.env.PORT || 3000);
 
 async function processData(stringData) {
@@ -47,7 +52,7 @@ async function processData(stringData) {
       for( i=0; i<links.length; i++ ) {
         var link = process.env.URL_FILTER + links[i].replace(/amp;/g, "");
         if (link.length <= 100 && my_array.indexOf(link) == -1) {          
-          my_array.push(link)
+          my_array.push(link);
         }
       }
     }
@@ -72,7 +77,6 @@ setInterval(async function() {
           "<" + encodeURI(process.env.QUERY_URL).replace('QUERY',  encodeURIComponent(temp_data_expanded_url.replace("https://", ""))) + ">";
   
         try {
-          var url = process.env.WEBHOOK_FILTERED_URL;
           var player_name = "N/A";
           var trophies = "N/A";
           var highest_trophies = 0;
@@ -84,6 +88,8 @@ setInterval(async function() {
           var max_wins = "N/A";
           var cards_won = "N/A";
           var experience = "N/A";
+          var url = process.env.WEBHOOK_FILTERED_URL;
+          var date_time = moment(new Date((new Date).getTime())).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z";
 
           const API_players_response = await got(process.env.API_URL_DOMAIN +"/v1/players/%23" + hashtag, {
             headers: {
@@ -105,7 +111,8 @@ setInterval(async function() {
               trophies = trophies + " / " + Number(highest_trophies);
             } else {
               url = process.env.WEBHOOK_UNKNOWN_URL;
-            }  
+            }
+            log_array.push({data_time: (new Date()).toUTCString(), hashtag: hashtag, highest: highest_trophies});
             if ('leagueStatistics' in api_json_data){
               leagueStatistics = api_json_data['leagueStatistics'];
               if ('previousSeason' in leagueStatistics) {
@@ -158,6 +165,7 @@ setInterval(async function() {
                     "icon_url": "https://i.imgur.com/nMRazCT.png"
                   },
                   "color": 5746931,
+                  "timestamp": date_time,
                   "fields": [{
                       "name": "Trophies",
                       "value": trophies
@@ -207,7 +215,7 @@ setInterval(async function() {
                     "url": goqrme
                   },
                   "footer": {
-                    "text": moment(new Date((new Date).getTime())).format('YYYY-MM-DD[T]HH:mm:ss.SSS') + "Z"
+                    "text": date_time
                   }
                 }]
               }
@@ -242,13 +250,9 @@ setInterval(async function() {
             var date_time = new Date(Date.parse(article["created_at"].replace(/( \+)/, ' UTC$1')));
             var h = date_time.getUTCHours();
             if((START_TIME <= h && h < END_TIME && refresh) || DEBUG_MODE) {
-              var items = {};
               for (url in article["entities"]["urls"]) {
-                items[article["entities"]["urls"][url]["expanded_url"]] = true;
+                processData(article["entities"]["urls"][url]["expanded_url"]);
               }
-              for (var i in items) {
-                processData(i);
-              }   
             }
           }
         }
