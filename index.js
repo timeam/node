@@ -74,7 +74,7 @@ setInterval(async function() {
         var friend_link = encodeURI(temp_data_expanded_url);
         var goqrme = encodeURI(process.env.QR_URL) + encodeURIComponent(temp_data_expanded_url);
         var player_post =
-          "<" + encodeURI(process.env.QUERY_URL).replace('QUERY',  encodeURIComponent(temp_data_expanded_url.replace("https://", ""))) + ">";
+          "<" + encodeURI(process.env.QUERY_URL).replace('QUERY',  encodeURIComponent(temp_data_expanded_url.split("&")[0].replace("https://", ""))) + ">";
   
         try {
           var player_name = "N/A";
