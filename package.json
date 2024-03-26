@@ -2,7 +2,7 @@
   "name": "node",
   "version": "0.0.1",
   "dependencies": {
-    "express": "4.17.1",
+    "express": "4.19.2",
     "moment": "2.24.0",
     "jsesc": "2.5.2",
     "path": "0.12.7",
